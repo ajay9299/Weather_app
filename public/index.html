@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Weather App</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!--[if lt IE 7]>
+      <p class="browsehappy">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="#">upgrade your browser</a> to improve your experience.
+      </p>
+    <![endif]-->
+
+    <div class="card">
+      <div class="search">
+        <input type="text" class="search-bar" placeholder="Search city" />
+        <button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1.5em"
+            height="16"
+            fill="currentColor"
+            class="bi bi-search"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="weather loading">
+        <h2 class="city">Weather in Kota</h2>
+        <h1 class="temp">52°C</h1>
+        <div class="flex">
+          <img
+            src="http://openweathermap.org/img/wn/02d.png"
+            alt=""
+            class="icon"
+          />
+          <div class="description">Sunny</div>
+        </div>
+        <div class="humidity">Humidity: 30%</div>
+        <div class="wind">Wind Speed: 40-km/h</div>
+      </div>
+    </div>
+
+    <script>
+      let weather = {
+        apikey: "b084d8826b6f2b7f78b35dfd25204fbc",
+        fetchWeather: function (city) {
+          fetch(
+            "https://api.openweathermap.org/data/2.5/weather?q=" +
+              city +
+              "&units=metric&appid=" +
+              this.apikey
+          )
+            .then((response) => response.json())
+            .then((data) => this.displayWeather(data));
+        },
+
+        displayWeather: function (data) {
+          const { name } = data;
+          const { icon, description } = data.weather[0];
+          const { temp, humidity } = data.main;
+          const { speed } = data.wind;
+          document.querySelector(".city").innerText = "Weather in " + name;
+          document.querySelector(".icon").src =
+            " http://openweathermap.org/img/wn/" + icon + ".png";
+
+          document.querySelector(".description").innerText = description;
+          document.querySelector(".temp").innerText = temp + "°C";
+          document.querySelector(".humidity").innerText =
+            "Humidity: " + humidity + " %";
+          document.querySelector(".wind").innerText =
+            "Wind Speed: " + speed + "-km/h";
+          document.querySelector(".weather").classList.remove("loading");
+        },
+
+        search: function () {
+          this.fetchWeather(document.querySelector(".search-bar").value);
+        },
+      };
+
+      document.querySelector(".search").addEventListener("click", function () {
+        weather.search();
+      });
+
+      document
+        .querySelector(".search-bar")
+        .addEventListener("keyup", function () {
+          if (event.key == "Enter") {
+            weather.search();
+          }
+        });
+    </script>
+  </body>
+</html>
